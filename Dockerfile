@@ -5,11 +5,11 @@ FROM node:20.19-bookworm-slim AS base
 WORKDIR /app
 
 ###################################
-# Install all dependencies (cached)
+# Install all dependencies
 ###################################
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --include=optional
 
 ###################################
 # Development image (watch mode)
@@ -32,13 +32,11 @@ RUN npm run build
 
 ###################################
 # Install only production deps
-# Fresh install inside Linux container
-# so native binaries are correct
 ###################################
 FROM base AS prod-deps
 ENV NODE_ENV=production
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev --ignore-scripts=false
+RUN npm install --omit=dev --include=optional
 
 ###################################
 # Production runtime image
