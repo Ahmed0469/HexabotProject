@@ -32,11 +32,13 @@ RUN npm run build
 
 ###################################
 # Install only production deps
+# Fresh install inside Linux container
+# so native binaries are correct
 ###################################
 FROM base AS prod-deps
 ENV NODE_ENV=production
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev --ignore-scripts=false
 
 ###################################
 # Production runtime image
