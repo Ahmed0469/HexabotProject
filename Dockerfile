@@ -47,7 +47,12 @@ COPY --chown=node:node --from=prod-deps /app/node_modules ./node_modules
 COPY --chown=node:node --from=builder /app/dist ./dist
 COPY --chown=node:node package.json ./
 COPY --chown=node:node hexabot.config.json ./hexabot.config.json
-RUN mkdir -p /data /app/uploads && chown -R node:node /data /app/uploads
+
+# Create directories as root FIRST, then give ownership to node
+RUN mkdir -p /app/data /app/uploads \
+    && chown -R node:node /app/data /app/uploads
+
+# Switch to node user AFTER directory creation
 USER node
 EXPOSE 3000
 CMD ["node", "dist/main"]
