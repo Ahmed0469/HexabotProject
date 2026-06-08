@@ -36,7 +36,7 @@ RUN npm run build
 FROM base AS prod-deps
 ENV NODE_ENV=production
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 ###################################
 # Production runtime image
